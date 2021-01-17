@@ -1,0 +1,20 @@
+{
+  "name": "testing-nodejs-backend",
+  "version": "1.0.0",
+  "description": "To share what have I been using to test Node.js Backend Application and some of the useful node library",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bendanye/testing-nodejs-backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bendanye/testing-nodejs-backend/issues"
+  },
+  "homepage": "https://github.com/bendanye/testing-nodejs-backend#readme"
+}
