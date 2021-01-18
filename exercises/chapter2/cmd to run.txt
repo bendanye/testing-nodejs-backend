@@ -1,0 +1,17 @@
+-----2.1
+npm install axios@0.19.0
+
+npm install body-parser@1.18.3
+
+npm install express@4.17.1
+
+npm install mongoose@4.11.7
+
+-----2.3
+npm install -D @trendyol/jest-testcontainers@1.2.0
+
+-----2.4
+npm install -D supertest@4.0.2
+
+-----2.5
+npm install -D newman@4.5.4

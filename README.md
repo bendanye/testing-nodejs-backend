@@ -11,6 +11,14 @@ __Table of Contents__
 - [Exercise 1.2: Test more efficient - Property based testing](#-exercise-12-test-more-efficient)
 - [Exercise 1.3: Test exceptional scenario as well](#-exercise-13-test-exceptional-scenario-as-well)
 
+[Chapter 2 - API Testing](#chapter-2--api-testing)
+
+- [Exercise 2.1: Setup Hello API](#-exercise-21-hello-api)
+- [Exercise 2.2: Mock that DB](#-exercise-22-mock-that-DB)
+- [Exercise 2.3: Integration Testing with Jest-testcontainers](#-exercise-23-integration-testing-with-jest-testcontainers)
+- [Exercise 2.4: Test API without starting server - Supertest](#-exercise-24-test-api-without-starting-server)
+- [Exercise 2.5: Test API using Postman and Newman](#-exercise-25-test-api-without-starting-server)
+
 #  Introduction
 
 To share what have I been using to test Node.js Backend Application and some of the useful node library. Some of the concepts such as Unit Testing will not be covered.
@@ -261,7 +269,41 @@ The result from 1+2 = "12"? Why!!!?? Because we are adding two string instead of
 
 All test cases are passed now! Of course there are other exceptional scenario that can happened like what is the x value is null and etc but we are not going to there. Key thing is remind the developer that always think of possible exception scenario. :D
 
+#  Chapter 2 : API Testing
 
+In this chapter, we will be learning how to test API.
+
+###  Exercise 2.1: Setup Hello API
+
+In this exercise, we are going to install all the dependencies needed to setup the API server first
+
+1. Please ensure in your environment is using Ubuntu or Windows having MongoDB installed.
+
+2. Copy the files from `exercises\chapter2` folders to respective `src` folder.
+
+3. Install the following libraries to setup an API server
+
+   ```
+   npm install axios@0.19.0
+   
+   npm install body-parser@1.18.3
+   
+   npm install express@4.17.1
+   
+   npm install mongoose@4.11.7
+   ```
+
+4. Start the server by running the following command
+
+   ```
+   node src/server
+   ```
+
+5. To verify everything is ok, go to localhost:3050/api/health and should see an "OK" message
+
+###  Exercise 2.2: Mock DB
+
+In this exercise, we are going to install all the dependencies needed to setup the API server first
 
 
 
