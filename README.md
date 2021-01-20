@@ -305,7 +305,66 @@ In this exercise, we are going to install all the dependencies needed to setup t
 
 In this exercise, we are going to install all the dependencies needed to setup the API server first
 
+###  Exercise 2.3: Integration Testing with Jest-testcontainers
 
+In this exercise, 
 
+###  Exercise 2.4: Testing API without starting server - Supertest
+
+In this exercise, 
+
+###  Exercise 2.5: API Testing using Postman and Newman
+
+In this exercise, 
    
+#  Chapter 3 : Every small little things to improve your testing
 
+In this chapter, we will be learning how to test API.
+
+###  Exercise 3.1: Display Test Result in HTML Reporting
+
+In this chapter, we will be learning how to test API.
+
+###  Exercise 3.2: ESlint + Prettier
+
+In this chapter, we will be learning how to test API.
+
+###  Exercise 3.3: Test Coverage - To see if your tests are testing your codes
+
+In this chapter, we will be learning how to test API.
+
+###  Exercise 3.4: Eslint with Jest to ensure your tests are verifiy test result
+
+In this chapter, we will be learning how to test API.
+
+###  Exercise 3.5: Mutation Testing - Advanced technique to check your tests' effectiveness
+
+In this chapter, we will be learning how to test API.
+
+#  Chapter 4 : Improve your productivity and coding
+
+In this chapter, we will be learning how to test API.
+
+###  Exercise 4.1: Useful Vscode Extensions
+
+In this chapter, we will be learning how to test API.
+
+###  Exercise 4.2: Auto-format your code upon saving
+
+In this chapter, we will be learning how to test API.
+
+###  Exercise 4.3: Auto-linting using Husky and Lint-stage
+
+In this chapter, we will be learning how to test API.
+
+###  Exercise 4.4: Use code Snippet to reduce duplicate typing of codes
+
+In this chapter, we will be learning how to test API.
+
+###  Exercise 4.5: Check your dependencies with dependency-cruiser
+
+In this chapter, we will be learning how to test API.
+
+###  Exercise 4.6: Duplicate code check using JSCPD
+
+In this chapter, we will be learning how to test API.
