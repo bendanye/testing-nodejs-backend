@@ -1,0 +1,3 @@
+"linting": "node_modules/.bin/eslint . --ext .js && echo 'Lint Complete'",
+"linting:log": "node_modules/.bin/eslint . --ext .js -f compact -o lint.log",
+"linting:fix": "node_modules/.bin/eslint . --ext .js --fix",

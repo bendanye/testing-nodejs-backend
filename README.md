@@ -565,13 +565,13 @@ In order to use Newman to run,
 
 3. Create a new line of `test:apitesting` script in `package.json` like this:
 
-```json
-{
-    "scripts": {
-        "test:apitesting": "node test/apitesting/apitesting"
+    ```json
+    {
+        "scripts": {
+            "test:apitesting": "node test/apitesting/apitesting"
+        }
     }
-}
-```
+    ```
 
 4. Create a new js file, `apitesting.js` inside `test/api` folder
 
@@ -639,15 +639,162 @@ In this chapter, we will be learning some of the techniques and libraries that c
 
 ###  Exercise 3.1: Treat your test codes as production codes
 
-In this chapter, we will be learning how to test API.
+Remember the Chapter 2 exercises where we created `ingest.int.narrow.test.js` and `ingestApi.int.narrow.test`? If you understand fully what both the test codes does, you have realized that both tests are testing the same thing?
+
+`ingest.int.narrow.test.js` is testing the business logic of `ingest()` while `ingestApi.int.narrow.test.js` is testing the API that calls `ingest()`.  This means `ingest.int.narrow.test.js` is a duplicate test therefore you do not need this test anymore by just deleting this file! Remember to treat your test codes like your production codes by constant refactoring when necessary.
 
 ###  Exercise 3.2: Display Test Result in HTML Reporting
 
-In this chapter, we will be learning how to test API.
+Currently each time you run your tests, the test result is displayed in the CLI which may not be that useful if the tests are to be run during CICD and you may either want to publish the results in GitLab/GitHub or download the results for troubleshooting purpose. To achieve that, you can output the test results into a HTML report. For this exercise we will be using another node module, [Jest-html-reporter](https://www.npmjs.com/package/jest-html-reporter)
+
+1. Install the Jest-html-reporter
+
+   ```
+   npm install -D jest-html-reporter@2.8.0
+   ```
+
+2. Add the following codes in `jest.config.js`
+
+    ```javascript
+    "reporters": [
+        "default",
+        ["./node_modules/jest-html-reporter", {
+            "outputPath": "./reports/test-report.html",
+            "pageTitle": "Test Report"
+        }]
+    ]
+    ```
+
+3. Open terminal and type the command
+
+    ```
+   npm test
+   ```
+
+   You should see the tests should run as well as the jest-html-reporter >> Report generated (./reports/test-report.html)
 
 ###  Exercise 3.3: ESlint + Prettier
 
-In this chapter, we will be learning how to test API.
+I love green build in CICD pipelines and should always strive to do so. Committing codes such as using Await without Async or declare same const variables without testing is inexcusable. 
+
+Also sometimes newly joined developer does not know how the team structure their codes like whether to use Single Quote or Double Quote when declaring String value (I admit, I been asking myself this question many times before I find out the answer myself) 
+
+Luckily there are tools out there can help us do some form of checking or do the formatting for us.
+
+[EsLint](https://eslint.org/) is a tool that scan your codes and flagged out any potential problems.
+
+[Prettier](https://prettier.io/) is a tool that can help you to format your codes.
+
+By using these two, I could potentially reduce committing my codes that caused any run-time errors as well as everyone in the team will be using the same configuration or thinking on how to format the codes.
+
+1. Install all the node libraries for EsLint and Prettier
+
+   ```
+   npm i -D eslint@6.6.0 eslint-config-prettier@6.9.0 eslint-plugin-node@11.0.0 eslint-plugin-prettier@3.1.1 eslint-plugin-promise@4.2.1 eslint-plugin-security@1.4.0 prettier@1.19.1
+   ```
+
+2. Create `.prettierrc` at your root directory
+
+3. Add the following codes in `.prettierrc`
+
+    ```json
+    {
+        "tabWidth": 4,
+        "printWidth": 150,
+        "singleQuote": true
+    }
+    ```
+
+    Please refer to [here](hhttps://prettier.io/docs/en/options.html) for more information on what does each key-value meant.
+
+4. Create `.eslintrc.json` at your root directory
+
+5. Add the following codes in `.eslintrc.json`
+
+    ```json
+    {
+        "env": {
+            "browser": true,
+            "es6": true,
+            "jest": true,
+            "jasmine": true,
+            "node": true
+        },
+        "extends": [
+            "prettier",
+            "eslint:recommended",
+            "plugin:node/recommended",
+            "plugin:security/recommended",
+            "plugin:promise/recommended"
+        ],
+        "overrides": [
+            {
+                "files": ["test/**/*.js"],
+                "rules": {
+                    "node/no-unpublished-require": "off",
+                    "promise/always-return": "off",
+                    "no-process-exit": "warn"
+                }
+            }
+        ],
+        "parserOptions": {
+            // Only ESLint 6.2.0 and later support ES2020.
+            "ecmaVersion": 2018,
+            "sourceType": "module"
+        },
+        "plugins": [
+            "prettier"
+        ],
+        "rules": {
+            "prettier/prettier": ["error"],
+            "promise/always-return": "warn"
+        }
+    }
+    ```
+
+    Please refer to [here](https://eslint.org/docs/user-guide/configuring) for more information on how to setup such as overriding the rules.
+
+    One thing to note, if you look at "overrides", you will see that I am changing some of the rules for test codes. What it meant is that some of the rules are not applicable to the test codes such as using library that are under DevDependencies.
+
+5. Create `.eslintignore` at your root directory
+
+6. Add the following codes in `.eslintignore`
+
+    ```
+    .gitignore
+    reports/
+    **/node_modules/**
+    package-lock.json
+    package.json
+    ```
+
+    This file help me to indicate which files or folders that should be excluded from EsLint.
+
+7. Create few lines of script in `package.json` like this:
+
+    ```json
+    {
+        "scripts": {
+            "linting": "node_modules/.bin/eslint . --ext .js && echo 'Lint Complete'",
+            "linting:log": "node_modules/.bin/eslint . --ext .js -f compact -o lint.log",
+            "linting:fix": "node_modules/.bin/eslint . --ext .js --fix",
+        }
+    }
+    ```
+
+8. To lint your codes, Open terminal and type the command
+
+    ```
+   npm run linting
+   ```
+
+9. You should able to see the linting result and should be many formatting errors which mostly can be easily solved. To ask EsLint to fix as much problem as possible, type the command
+
+    ```
+   npm run linting:fix
+   ```
+
+   You should see most errors have already resolved!
 
 ###  Exercise 3.4: Code Coverage - To see if your tests are testing your codes
 

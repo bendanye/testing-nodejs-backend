@@ -1,0 +1,8 @@
+.gitignore
+reports/
+allure-report/
+allure-results/
+.lighthouseci/
+**/node_modules/**
+package-lock.json
+package.json

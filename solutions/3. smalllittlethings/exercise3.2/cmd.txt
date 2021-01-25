@@ -1,0 +1,1 @@
+npm install -D jest-html-reporter@2.8.0
