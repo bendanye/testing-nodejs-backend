@@ -82,7 +82,7 @@ npm install jest --save-dev
 ```json
 {
     "scripts": {
-        "test": "jest --rootDir=test"
+        "test": "jest"
     }
 }
 ```
@@ -794,11 +794,41 @@ By using these two, I could potentially reduce committing my codes that caused a
    npm run linting:fix
    ```
 
-   You should see most errors have already resolved!
+   You should see most or all errors have already resolved!
 
 ###  Exercise 3.4: Code Coverage - To see if your tests are testing your codes
 
-In this chapter, we will be learning how to test API.
+One technique to see if your tests are really testing your production codes are using **Code Coverage**. Code coverage is a measurement of how many lines/blocks/arcs of your **production codes** are executed while the tests are running.
+
+1. Add the following codes in `jest.config.js`
+
+    ```json
+    coverageDirectory: "./reports/coverage",
+    collectCoverage: true,
+    coverageReporters: ["text", "html"],
+    collectCoverageFrom: [
+        "./src/**/*.js"
+    ],
+    ```
+
+2. Open terminal and type the command
+
+    ```
+   npm test
+   ```
+
+   You should see the tests should run as well as see code coverage.
+
+   File                |  % Stmts | % Branch |  % Funcs |  % Lines | Uncovered Line #s |
+   --------------------|----------|----------|----------|----------|-------------------|
+   All files           |    45.11 |    22.86 |    30.43 |    45.11 |                   |
+    src                |      100 |      100 |      100 |      100 |                   |
+     app.js            |      100 |      100 |      100 |      100 |                   |
+     calculator.js     |      100 |      100 |      100 |      100 |                   |
+    src/api/database   |       45 |      100 |        0 |       45 |                   |
+     User.model.js     |      100 |      100 |      100 |      100 |                   |
+
+    You can view the HTML report by opening the index.html found at ./reports/coverage
 
 ###  Exercise 3.5: Eslint with Jest to ensure your tests are verify test result
 
