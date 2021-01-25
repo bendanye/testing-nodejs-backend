@@ -19,6 +19,25 @@ __Table of Contents__
 - [Exercise 2.4: Test API without starting server - Supertest](#-exercise-24-test-api-without-starting-server)
 - [Exercise 2.5: Test API using Postman and Newman](#-exercise-25-test-api-without-starting-server)
 
+[Chapter 3 - Every small little things to improve your testing](#chapter-3--every-small-little-things-to-improve-your-testing)
+
+- [Exercise 3.1: Treat your test codes as production codes](#-exercise-31-treat-your)
+- [Exercise 3.2: Display Test Result in HTML Reporting](#-exercise-32-display-test-result)
+- [Exercise 3.3: ESlint + Prettier](#-exercise-33-eslint-prettier)
+- [Exercise 3.4: Code Coverage - To see if your tests are testing your codes](#-exercise-34-code-coverage)
+- [Exercise 3.5: Eslint with Jest to ensure your tests are verify test result](#-exercise-35-eslint-jest)
+- [Exercise 3.6: Tag your tests](#-exercise-36-tag-tests)
+- [Exercise 3.7: Mutation Testing - Advanced technique to check your tests' effectiveness](#-exercise-37-mutation-testing)
+
+[Chapter 4 - Improve your productivity and coding](#chapter-4--improve-your-productivity-and-coding)
+
+- [Exercise 4.1: Useful Vscode Extensions](#-exercise-41-useful-vscode-extensions)
+- [Exercise 4.2: Auto-format your code upon saving](#-exercise-42-auto-format-codes)
+- [Exercise 4.3: Auto-linting using Husky and Lint-stage](#-exercise-43-husky-lintstage)
+- [Exercise 4.4: Use code Snippet to reduce duplicate typing of codes](#-exercise-44-code-snippet)
+- [Exercise 4.5: Check your dependencies with dependency-cruiser](#-exercise-45-dependencies-cruister)
+- [Exercise 4.6: Duplicate code check using JSCPD](#-exercise-46-jscpd)
+
 #  Introduction
 
 To share what have I been using to test Node.js Backend Application and some of the useful node library. Some of the concepts such as Unit Testing will not be covered.
@@ -301,43 +320,348 @@ In this exercise, we are going to install all the dependencies needed to setup t
 
 5. To verify everything is ok, go to localhost:3050/api/health and should see an "OK" message
 
-###  Exercise 2.2: Mock DB
+6. Read through the codes in `src/api/web/ingest` and its dependencies to understand more on what we are will be testing on. 
 
-In this exercise, we are going to install all the dependencies needed to setup the API server first
+###  Exercise 2.2: Mocking function
+
+In this exercise, we will be learning how to mock function and why there is a need for mocking.
+
+Read through the codes in `src/api/web/ingest` and its dependencies if you haven't done so. We will be writing test case for `ingest()` inside `src/api/web/ingest/ingest.js`. 
+
+What `ingest()` does is just create new User if the username is not found else will throw a Business Exception indicating the username has already exists. 
+
+1. Create `ingest.int.narrow.test.js` inside `test/api/web/ingest`
+2. Since we are testing on `ingest()` therefore import the code into `ingest.int.narrow.test.js` and write the following codes
+
+```javascript
+const { ingest } = require('../../../../src/api/web/ingest/ingest');
+
+describe('api/web/ingest/ingest', () => {
+    describe('ingest', () => {
+        test('should pass when there is no existing username', async() => {
+            const result = await ingest({ username: "hello tester" });
+            expect(result).toBe("SUCCESS")
+        });
+    });
+});
+```
+
+3. Run the test by running the following
+
+   ```
+   npm test ingest.int.narrow.test
+   ```
+
+4. If you previously able to connect to local MongoDB successfully, you should able to see it should successfully run and one record of User should be created in the Database
+
+5. If you rerun the same test again, you should encounter 1 failed test case. Why? because the user has already exists in the database! To able to keep rerun the same test cases many times, you can solve it either by randomly generated the username each time the test case is run or use mocking to mock the DB methods (in this case is `getUserByUserName()` and `createUser()`)  For this exercise We will be mocking both functions
+
+6. Let get started by instructs Jest that we will going to mock the `UserRepository` that contains the `getUserByUserName()` and `createUser()`
+
+```javascript
+jest.mock('../../../../src/api/database/UserRepository');
+```
+
+7. We going to mock the implementation of `getUserByUserName()` by returning an empty array to indicate no records found. Add the codes at the test block before `await ingest` code
+
+```javascript
+getUserByUserName.mockImplementation(() => {
+    return []
+});
+```
+
+8. Next we will mocking the implementation of `createUser()` by returning a "SUCCESS" message
+
+```javascript
+createUser.mockImplementation(() => {
+    return "SUCCESS";
+});
+```
+
+9. Finally before each test cases starts, we need to revert`getUserByUserName()` and `createUser()` to original state so hygiene purpose 
+
+```javascript
+beforeEach(() => {
+    getUserByUserName.mockClear();
+    createUser.mockClear();
+});
+```
+
+10. Now we rerun the test case as many times as you want and each time you will get a success test case
 
 ###  Exercise 2.3: Integration Testing with Jest-testcontainers
 
-In this exercise, 
+In this exercise, we will be learning how to use a library called Jest-testcontainers that can helps you to write a better test while avoiding mocking any behaviors. This exercise requires the machine installed Docker Cli. 
 
-###  Exercise 2.4: Testing API without starting server - Supertest
+####  Why use Testcontainers instead of mocking?
 
-In this exercise, 
+In the previous exercise, we have learnt how to use mocking to mock behaviors but mocking itself should use sparingly as we should always strive to test all the codes as much as possible without changing anything. In this case DB does not actually need to be mock as we can easily setup a DB instance before the test starts and kill the instance once the tests have completed running. Mocking should be use for things that may not easy to setup (like validate JWT token with Oauth server) or calling another REST API.
+
+1. Modify `ingest.int.narrow.test.js` by removing all the mocking related codes and add db so that to disconnect the DB after the test has finished running
+
+```javascript
+const { ingest } = require('../../../../src/api/web/ingest/ingest');
+
+const db = require('../../../../src/api/database/db');
+
+describe('api/web/ingest/ingest', () => {
+    describe('ingest', () => {
+
+        afterAll(async () => {
+            await db.disconnect();
+        });
+
+        test('should pass when there is no existing username', async() => {
+            const result = await ingest({ username: "hello tester" });
+            expect(result).toBe("SUCCESS")
+        });
+
+        
+    });
+});
+```
+
+2. Install the [Jest-Testcontainers](https://github.com/Trendyol/jest-testcontainers)
+
+   ```
+   npm install -D @trendyol/jest-testcontainers@1.2.0
+   ```
+
+3. Add preset inside `jest.config.js` 
+
+   ```
+   preset: '@trendyol/jest-testcontainers',
+   ```
+
+4. Create a new file, `jest-testcontainers-config.js` at the root directory and add the following content
+
+   ```javascript
+   module.exports = {
+       mongo: {
+           image: 'mongo',
+           tag: '3.4',
+           ports: [27017]
+       }
+   };
+   ```
+
+   What this piece of codes meant a mongodb image with tag "3.4" to be created when the testing starting 
+
+5. Modify the codes at `src/api/database/db.js`
+
+   ```javascript
+   const databaseFromTestDocker = global.__TESTCONTAINERS_MONGO_IP__
+       ? `mongodb://${global.__TESTCONTAINERS_MONGO_IP__}:${global.__TESTCONTAINERS_MONGO_PORT_27017__}/iammiddle`
+       : null;
+   
+   const database = process.env.MONGO_CONNECTION || databaseFromTestDocker || 'mongodb://localhost:27017/iammiddle';
+   ```
+
+   If you look closely at the codes, you will notice that there is MONGO_*___ which is created by the jest-testcontainers that we need to use to constructs the mongodb connection string.
+
+6. Run the `ingest.int.narrow.test` test multiple times and you should see it will pass
+
+####  Testcontainers vs Docker-Compose
+
+For those familiar with Docker, what Testcontainers does is very similar to Docker Compose. For me I prefer to use Testconainers over Docker Compose because:
+
+- I prefer my docker image to contain only the production codes and Docker Compose when running will build the image and contains the test codes. (although there are ways to prevent this like using Docker multistage)
+- Testcontainers will use random port and is useful when there is a scenario that local machine still using the same port that requires.
+
+###  Exercise 2.4: Testing API without starting server - SuperTest
+
+In this exercise, we will be looking into how to test API without starting the REST API server using SuperTest
+
+####  Current limitations of existing tests
+
+In the previous exercises, you have tested the business logic of `ingest()`  but there are still limitations in the current tests because business logic is called by Controller and if we can test this part, it will be even better! 
+
+So let get started!
+
+1. Install the [SuperTest](https://www.npmjs.com/package/supertest)
+
+   ```
+   npm install -D supertest@4.0.2
+   ```
+
+2. Create a new js file, `ingestApi.int.narrow.test.js` inside `test/api/web/ingest` folder
+
+3. Add the following codes inside `ingestApi.int.narrow.test.js`
+
+   ```javascript
+   const request = require('supertest');
+   
+   const db = require('../../../../src/api/database/db');
+   
+   const ingestApi = require('../../../../src/api/web/ingest/ingestApi');
+   
+   const { registerApp } = require('../../../../src/app');
+   const app = registerApp({
+       connection: {
+           readyState: 1
+       }
+   });
+   
+   describe('GET /api/ingest', () => {
+   
+       afterAll(async () => {
+           await db.disconnect();
+       });
+   
+       test('should success', async () => {
+           ingestApi.registerIngestApi(app);
+   
+           return request(app)
+               .post(`/api/ingest`, { username: 'fromsupertest' })
+               .then(response => {
+                   expect(response.statusCode).toBe(200);
+                   expect(response.body.success).toBe(true);
+               });
+       });
+   });
+   ```
+
+   What this piece of test codes does is we want to test '/api/ingest' API and we are using SuperTest to "start" the API by passing the App and test the response of the API like whether the HTTP status code 200 and etc
+
+4. Run `ingestApi.int.narrow.test` test and you should see the test has pass
 
 ###  Exercise 2.5: API Testing using Postman and Newman
 
-In this exercise, 
+In this exercise, we will be learning another approach to test API by using Postman and Newman
+
+We will not be going through on how to download and install [Postman](https://www.postman.com/) since is quite straightforward.
+
+####  Exercise 2.5.1 Create Collection
+
+####  Exercise 2.5.2 Create folder
+
+####  Exercise 2.5.3 Create environment
+
+####  Exercise 2.5.4 Create request
+
+####  Exercise 2.5.5 Add assertions into request for testing
+
+####  Exercise 2.5.6 Use runner to run all the requests
+
+####  Exercise 2.5.7 Export collection
+
+####  Exercise 2.5.8 Import collection
+
+####  Exercise 2.5.9 Export environment
+
+####  Exercise 2.5.10 Newman
+
+[Newman](https://www.npmjs.com/package/newman) is a command-line collection runner for Postman and I mainly using it to run during CICD Pipelines which will be covered more later.
+
+In order to use Newman to run,
+
+1. Install the [Newman](https://www.npmjs.com/package/newman)
+
+   ```
+   npm install -D newman@4.5.4
+   ```
+
+2. Export the Collection and Environment and place them into `test/api`
+
+3. Create a new line of `test:apitesting` script in `package.json` like this:
+
+```json
+{
+    "scripts": {
+        "test:apitesting": "node test/apitesting/apitesting"
+    }
+}
+```
+
+4. Create a new js file, `apitesting.js` inside `test/api` folder
+
+5. Add the following codes inside `apitesting.js`
+
+   ```javascript
+   const newman = require('newman');
    
+   let environmentStuff = require('./backendapp.postman_environment.json');
+   
+   async function start() {
+   
+       environmentStuff.values.forEach(element => {
+           if (element.key == 'url') {
+               element.value = 'localhost:3050';
+           }
+       });
+   
+       newman
+           .run({
+               collection: require('./backend-app.postman_collection.json'),
+               reporters: ['cli'],
+               folder: ['healthcheck', 'search'],
+               environment: environmentStuff
+           })
+           .on('done', function(err, summary) {
+               if (err || summary.error) {
+                   console.error('collection run encountered an error.');
+                   process.exit(1);
+               } else {
+                   console.log('collection run completed.');
+                   process.exit(0);
+               }
+           });
+   }
+   
+   start();
+   ```
+
+   What this piece of codes does is to import newman module and load environment.json and change the value inside the environment if there is a value set it via process.env. 
+
+   What Collection to run is indicated via the name of the collection and any specific folders (in this case, all the requests in healthcheck and search folder will be run only) 
+
+6. Open terminal and type the command
+
+    ```
+   npm run test:apitesting
+   ```
+
+   You should see the newman run successfully and all tests in the Collection should pass
+
+####  Question: SuperTest vs Newman
+
+I am pretty sure after you have tried out both SuperTest and Newman, in your mind may have questions such as:
+
+- when to use SuperTest and Newman?
+- Do you need both when both are doing the same tests?
+
+The answers in my opinion are you need both SuperTest and Newman! Taking reference figure 1 from [Test Pyramid](https://martinfowler.com/articles/practical-test-pyramid.html) when there are two "Test". One is "Test" before deploy and after is "Test" after deploy. SuperTest can be used to test your codes at before deploy test and Newman can be used to test your API is working and serving request after deploy. My personal opinion though. :D
+
+
 #  Chapter 3 : Every small little things to improve your testing
 
-In this chapter, we will be learning how to test API.
+In this chapter, we will be learning some of the techniques and libraries that can help to improve your testing.
 
-###  Exercise 3.1: Display Test Result in HTML Reporting
-
-In this chapter, we will be learning how to test API.
-
-###  Exercise 3.2: ESlint + Prettier
+###  Exercise 3.1: Treat your test codes as production codes
 
 In this chapter, we will be learning how to test API.
 
-###  Exercise 3.3: Test Coverage - To see if your tests are testing your codes
+###  Exercise 3.2: Display Test Result in HTML Reporting
 
 In this chapter, we will be learning how to test API.
 
-###  Exercise 3.4: Eslint with Jest to ensure your tests are verifiy test result
+###  Exercise 3.3: ESlint + Prettier
 
 In this chapter, we will be learning how to test API.
 
-###  Exercise 3.5: Mutation Testing - Advanced technique to check your tests' effectiveness
+###  Exercise 3.4: Code Coverage - To see if your tests are testing your codes
+
+In this chapter, we will be learning how to test API.
+
+###  Exercise 3.5: Eslint with Jest to ensure your tests are verify test result
+
+In this chapter, we will be learning how to test API.
+
+###  Exercise 3.6: Tag your tests
+
+In this chapter, we will be learning how to test API.
+
+###  Exercise 3.7: Mutation Testing - Advanced technique to check your tests' effectiveness
 
 In this chapter, we will be learning how to test API.
 
@@ -368,3 +692,7 @@ In this chapter, we will be learning how to test API.
 ###  Exercise 4.6: Duplicate code check using JSCPD
 
 In this chapter, we will be learning how to test API.
+
+```
+
+```

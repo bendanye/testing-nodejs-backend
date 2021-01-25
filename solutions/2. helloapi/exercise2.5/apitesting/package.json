@@ -1,0 +1,1 @@
+"test:apitesting": "node test/apitesting/apitesting"

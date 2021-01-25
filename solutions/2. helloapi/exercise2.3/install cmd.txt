@@ -1,0 +1,1 @@
+npm install -D @trendyol/jest-testcontainers@1.2.0
