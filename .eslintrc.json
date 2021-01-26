@@ -10,6 +10,7 @@
         "prettier",
         "eslint:recommended",
         "plugin:node/recommended",
+        "plugin:jest/recommended",
         "plugin:security/recommended",
         "plugin:promise/recommended"
     ],
@@ -33,6 +34,7 @@
     ],
     "rules": {
         "prettier/prettier": ["error"],
-        "promise/always-return": "warn"
+        "promise/always-return": "warn",
+        "jest/expect-expect": "error"
     }
 }

@@ -4,7 +4,10 @@
   "description": "To share what have I been using to test Node.js Backend Application and some of the useful node library",
   "main": "index.js",
   "scripts": {
-    "test": "jest "
+    "test": "jest ",
+    "linting": "node_modules/.bin/eslint . --ext .js && echo 'Lint Complete'",
+    "linting:log": "node_modules/.bin/eslint . --ext .js -f compact -o lint.log",
+    "linting:fix": "node_modules/.bin/eslint . --ext .js --fix"
   },
   "repository": {
     "type": "git",
@@ -20,6 +23,7 @@
   "devDependencies": {
     "eslint": "^6.6.0",
     "eslint-config-prettier": "^6.9.0",
+    "eslint-plugin-jest": "^23.0.4",
     "eslint-plugin-node": "^11.0.0",
     "eslint-plugin-prettier": "^3.1.1",
     "eslint-plugin-promise": "^4.2.1",

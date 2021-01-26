@@ -832,7 +832,72 @@ One technique to see if your tests are really testing your production codes are 
 
 ###  Exercise 3.5: Eslint with Jest to ensure your tests are verify test result
 
-In this chapter, we will be learning how to test API.
+In previous exercise where we learn how to use Code Coverage to measure how much **production code **are executed and this also meant what production codes are being run by the tests, your tests may not doing any assertion on the expected result due to developers' carelessness. 
+
+To demonstrate this:
+
+1. Copy `exercises/chapter3/temperature.js` to `src` folder
+
+2. Copy `exercises/chapter3/temperature.unit.test.js` to `test` folder
+
+3. Look at `test/temperature.unit.test.js` and you noticed that the tests are not asserting anything
+
+4. Open terminal and type the command
+
+   ```
+   npm test temperature.unit.test
+   ```
+
+   You should see the temperature's test has run as well as 100% code coverage where the test are not asserting anything! Using Code Coverage to see if your tests are effective is not silver bullet (we come to that later on what maybe a better approach). 
+   
+   One way to ensure all your tests are asserting something minimally is by using eslint-plugin-jest.
+   
+5. Install [eslint-plugin-jest](https://www.npmjs.com/package/eslint-plugin-jest)
+
+   ```
+   npm i -D eslint-plugin-jest@23.0.4
+   ```
+
+6. Add the following codes in `.eslintrc.json`
+
+    ```json
+    "extends": [
+        "plugin:jest/recommended"
+    ],
+     "rules": {
+        "jest/expect-expect": "error"
+    }
+    ```
+
+    What this lines of codes does are to tell Eslint i got new plugin to add and I overriding jest/expect-expect rule to display errors if the test does not have any assertion.
+
+7. To lint your codes, Open terminal and type the command
+
+   ```
+   npm run linting
+   ```
+
+   You will see that the linting will flag out temperate.unit.test.js which does not have any assertion.
+
+   testing-nodejs-backend\test\temperature.unit.test.js
+      4:3  error  Test has no assertions                                     jest/expect-expect
+
+8. To solve this problem, go to `test/temperature.unit.test.js` and ensure it is asserting
+
+    ```javascript
+    const { isWeatherHot } = require('../src/temperature');
+
+    describe('temperature', () => {
+        test('Should return true', () => {
+            expect(isWeatherHot(100)).toBeTruthy();
+        });
+
+        test('Should return false', () => {
+            expect(isWeatherHot(20)).toBeFalsy();
+        });
+    });
+    ```
+    Rerun the linting and verify the previous error is no longer flagged out.
 
 ###  Exercise 3.6: Tag your tests
 
