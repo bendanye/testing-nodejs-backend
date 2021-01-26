@@ -25,7 +25,7 @@ __Table of Contents__
 - [Exercise 3.2: Display Test Result in HTML Reporting](#-exercise-32-display-test-result)
 - [Exercise 3.3: ESlint + Prettier](#-exercise-33-eslint-prettier)
 - [Exercise 3.4: Code Coverage - To see if your tests are testing your codes](#-exercise-34-code-coverage)
-- [Exercise 3.5: Eslint with Jest to ensure your tests are verify test result](#-exercise-35-eslint-jest)
+- [Exercise 3.5: Eslint with Jest to ensure your tests are asserting test result](#-exercise-35-eslint-jest)
 - [Exercise 3.6: Tag your tests](#-exercise-36-tag-tests)
 - [Exercise 3.7: Mutation Testing - Advanced technique to check your tests' effectiveness](#-exercise-37-mutation-testing)
 
@@ -830,7 +830,7 @@ One technique to see if your tests are really testing your production codes are 
 
     You can view the HTML report by opening the index.html found at ./reports/coverage
 
-###  Exercise 3.5: Eslint with Jest to ensure your tests are verify test result
+###  Exercise 3.5: Eslint with Jest to ensure your tests are asserting test result
 
 In previous exercise where we learn how to use Code Coverage to measure how much **production code **are executed and this also meant what production codes are being run by the tests, your tests may not doing any assertion on the expected result due to developers' carelessness. 
 
@@ -958,9 +958,64 @@ Occasionally, we may only want to run certain type of test cases. For example, i
 
 ###  Exercise 3.7: Mutation Testing - Advanced technique to check your tests' effectiveness
 
+#### Why 100% Code Coverage is not a good indicator
+
 In the previous exercise when we have go through about what is **Code Coverage** and how it helps us to see if all our **production codes** are executed by the tests and deemed as fully tested. While some of us might strive for 100% code coverage, it is not a good indicator whether your tests are effective. Let's use some simple example, `temperature.js` and `temperature.unit.test.js` for illustration (please do not mind how the if-else code is written. :P)
 
-![image info](./imgs/mutation1.png)
+`temperature.js`
+   ```javascript
+   const isWeatherHot = temperature => {
+        if (temperature >= 30) {
+            return true;
+        } else {
+            return false;
+        }
+    };
+
+    module.exports = {
+        isWeatherHot
+    };
+
+
+   ```
+
+`temperature.unit.test.js`
+   ```javascript
+   const { isWeatherHot } = require('../src/temperature');
+
+    /**
+    *
+    * @group fast
+    * @group unit
+    */
+    describe('temperature', () => {
+        test('Should return true', () => {
+            expect(isWeatherHot(100)).toBeTruthy();
+        });
+
+        test('Should return false', () => {
+            expect(isWeatherHot(20)).toBeFalsy();
+        });
+    });
+
+   ```
+
+![Coverage Report](./imgs/mutation1.png)
+
+As you can see, the tests achieved 100% code coverage but the tests did not cover at least one scenario (See if you can spot it before announce the answer at the bottom). Mutation Testing can help to identify this scenario.
+
+#### Why Mutation Testing
+
+From Wikipedia: 
+**Mutation testing** (or mutation analysis or program mutation) is used to design new software tests and evaluate the quality of existing software tests.
+
+Mutation testing involves modifying a program in small ways. Each mutated version is called a mutant and tests detect and reject mutants by causing the behavior of the original version to differ from the mutant. This is called killing the mutant. Test suites are measured by the percentage of mutants that they kill. New tests can be designed to kill additional mutants. Mutants are based on well-defined mutation operators that either mimic typical programming errors (such as using the wrong operator or variable name) or force the creation of valuable tests (such as dividing each expression by zero). 
+
+The purpose is to help the tester/developer develop effective tests or locate weaknesses in the test data used for the program or in sections of the code that are seldom or never accessed during execution. Mutation testing is a form of [white-box testing](https://en.wikipedia.org/wiki/White-box_testing).
+
+![Sample Mutation Code](./imgs/mutation1.1.png)
+
+
 
 #  Chapter 4 : Improve your productivity and coding
 
