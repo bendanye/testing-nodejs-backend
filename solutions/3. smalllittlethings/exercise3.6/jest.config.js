@@ -1,7 +1,7 @@
 module.exports = {
     roots: ["test"],
-    runner: "groups",
     testRegex: '.*.test.js',
+    runner: "groups",
     coverageDirectory: "./reports/coverage",
     collectCoverage: true,
     coverageReporters: ["text", "html"],

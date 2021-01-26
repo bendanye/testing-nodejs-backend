@@ -901,8 +901,60 @@ To demonstrate this:
 
 ###  Exercise 3.6: Tag your tests
 
-In this chapter, we will be learning how to test API.
+Occasionally, we may only want to run certain type of test cases. For example, in a HR system where there are many modules such as Leave module, Claim module, Salary module. Let say if someone makes a code change in the Leave module, do we want to run all the test cases in the HR system? Definitely yes if we have the time to do so but if we do not have the time, the best approach will be "I need to run all the Leave module related test cases". By tagging your tests, you certainly can do so.
 
+1. Install [jest-runner-groups](https://www.npmjs.com/package/jest-runner-groups)
+
+   ```
+   npm i -D jest-runner-groups@2.0.1
+   ```
+
+2. Add the following line at `jest.config.js`
+
+   ```javascript
+   runner: "groups"
+   ```
+
+3. For demonstration, we will be adding sample @group at `test/temperature.unit.test.js`
+
+   ```javascript
+   const { isWeatherHot } = require('../src/temperature');
+
+    /**
+    *
+    * @group fast
+    * @group unit
+    */
+    describe('temperature', () => {
+        test('Should return true', () => {
+            expect(isWeatherHot(100)).toBeTruthy();
+        });
+
+        test('Should return false', () => {
+            expect(isWeatherHot(20)).toBeFalsy();
+        });
+    });
+
+   ```
+
+4. Create one line of script in `package.json` like this:
+
+    ```json
+    {
+        "scripts": {
+            "test:unit": "jest --group=unit"
+        }
+    }
+    ```
+    
+ 5. Run the following command
+
+   ```
+   npm run test:unit
+   ```
+
+    You should see only `temperature.unit.test.js` has run
+   
 ###  Exercise 3.7: Mutation Testing - Advanced technique to check your tests' effectiveness
 
 In this chapter, we will be learning how to test API.
