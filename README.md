@@ -964,7 +964,7 @@ In the previous exercise when we have go through about what is **Code Coverage**
 ![image info](/imgs/mutation1.png)
 ```
 
-
+![](.\imgs\mutation1.png)
 
 #  Chapter 4 : Improve your productivity and coding
 
