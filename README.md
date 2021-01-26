@@ -897,6 +897,7 @@ To demonstrate this:
         });
     });
     ```
+
     Rerun the linting and verify the previous error is no longer flagged out.
 
 ###  Exercise 3.6: Tag your tests
@@ -953,7 +954,7 @@ Occasionally, we may only want to run certain type of test cases. For example, i
    npm run test:unit
    ```
 
-    You should see only `temperature.unit.test.js` has run
+   You should see only `temperature.unit.test.js` has run
    
 ###  Exercise 3.7: Mutation Testing - Advanced technique to check your tests' effectiveness
 
