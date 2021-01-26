@@ -961,7 +961,7 @@ Occasionally, we may only want to run certain type of test cases. For example, i
 In the previous exercise when we have go through about what is **Code Coverage** and how it helps us to see if all our **production codes** are executed by the tests and deemed as fully tested. While some of us might strive for 100% code coverage, it is not a good indicator whether your tests are effective. Let's use some simple example, `temperature.js` and `temperature.unit.test.js` for illustration (please do not mind how the if-else code is written. :P)
 
 ```
-![image info](imgs/mutation1.png)
+![image info](/imgs/mutation1.png)
 ```
 
 
