@@ -1094,7 +1094,9 @@ In previous chapter where we have setup Prettier to format our codes whenever we
 
 ### Exercise 4.3: Auto-linting using Husky and Lint-stage
 
-In this chapter, we will be learning how to test API.
+In the previous exercise where we learn how to use VSCode to auto format upon saving. This approach while it saves manual effort on formatting the code, the challenge that developers (especially me) often faces is how to remember to run automated testing and linting before commit the codes so that to prevent bad built as much as possible? Fear not, thanks to google, I finally got the answer, Husky and Lint-stage
+
+ 
 
 ### Exercise 4.4: Use code Snippet to reduce duplicate typing of codes
 
