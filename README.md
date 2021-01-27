@@ -1040,7 +1040,7 @@ Let try using [Strkyer](https://stryker-mutator.io/) to try Mutation Testing.
             timeoutMs: 60000,
             jest: {
                 projectType: 'custom',
-                config: require('./stryker.jest.ci.conf.js'),
+                config: require('./jest.config.js'),
                 enableFindRelatedTests: true
             }
         });
