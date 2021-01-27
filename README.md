@@ -1065,7 +1065,25 @@ Let try using [Strkyer](https://stryker-mutator.io/) to try Mutation Testing.
    npm run mutation:ci
    ```
 
-   You should see only `temperature.unit.test.js` has run
+   You can view the report at /reports/mutation/index.html
+
+   ![Report 1](./imgs/mutation2.png)
+
+6. When you click on the red color, you will see something as shown: 
+
+![Report 2](./imgs/mutation3.png)
+
+This shows that one of the mutants survived when the code changed to " > 30" because the tests did not test for it!
+
+7. Go back to `temperature.unit.test.js` and add one more test case
+
+   ```javascript
+   test('Should return true for 30', () => {
+    expect(isWeatherHot(30)).toBeTruthy();
+   });
+   ```
+
+8. Rerun the mutation test and should see the mutant has been killed. ![Report 3](./imgs/mutation4.png)
 
 #  Chapter 4 : Improve your productivity and coding
 

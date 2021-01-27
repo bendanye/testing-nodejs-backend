@@ -12,7 +12,7 @@ module.exports = function(config) {
     timeoutMs: 60000,
     jest: {
       projectType: 'custom',
-      config: require('./stryker.jest.ci.conf.js'),
+      config: require('./jest.config.js'),
       enableFindRelatedTests: true
     }
   });
