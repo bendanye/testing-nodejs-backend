@@ -1015,7 +1015,57 @@ The purpose is to help the tester/developer develop effective tests or locate we
 
 ![Sample Mutation Code](./imgs/mutation1.1.png)
 
+Let try using [Strkyer](https://stryker-mutator.io/) to try Mutation Testing.
 
+1. Install Strkyer and other node modules
+
+   ```
+   npm i -D @stryker-mutator/core@2.4.0 @stryker-mutator/html-reporter@2.4.0 @stryker-mutator/javascript-mutator@2.4.0 @stryker-mutator/jest-runner@2.4.0
+   ```
+
+2. Create `stryker.ci.conf.js` with the following contents:
+
+   ```javascript
+   module.exports = function(config) {
+        config.set({
+            mutate: ['src/**/*.js', '!src/server.js'],
+            mutator: {
+                name: 'javascript',
+                excludedExpressions: ['console.log']
+            },
+            reporters: ['html', 'clear-text', 'progress'],
+            testRunner: 'jest',
+            transpilers: [],
+            coverageAnalysis: 'off',
+            timeoutMs: 60000,
+            jest: {
+                projectType: 'custom',
+                config: require('./stryker.jest.ci.conf.js'),
+                enableFindRelatedTests: true
+            }
+        });
+    };
+   ```
+
+3. Create one line of script in `package.json` like this:
+
+    ```json
+    {
+        "scripts": {
+            "mutation:ci": "stryker run stryker.ci.conf.js",
+        }
+    }
+    ```
+
+4. You should commit all your codes first as Stryker will mutate your actual codes and in case it does not rollback after the test.
+
+5. Run the following command
+
+   ```
+   npm run mutation:ci
+   ```
+
+   You should see only `temperature.unit.test.js` has run
 
 #  Chapter 4 : Improve your productivity and coding
 
