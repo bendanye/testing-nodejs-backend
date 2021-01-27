@@ -9,7 +9,7 @@
     "linting": "node_modules/.bin/eslint . --ext .js && echo 'Lint Complete'",
     "linting:log": "node_modules/.bin/eslint . --ext .js -f compact -o lint.log",
     "linting:fix": "node_modules/.bin/eslint . --ext .js --fix",
-    "mutation:ci": "stryker run stryker.ci.conf.js"
+    "test:mutation": "stryker run stryker.ci.conf.js"
   },
   "repository": {
     "type": "git",

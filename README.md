@@ -1052,7 +1052,7 @@ Let try using [Strkyer](https://stryker-mutator.io/) to try Mutation Testing.
     ```json
     {
         "scripts": {
-            "mutation:ci": "stryker run stryker.ci.conf.js",
+            "test:mutation": "stryker run stryker.ci.conf.js",
         }
     }
     ```
