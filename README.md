@@ -1020,7 +1020,7 @@ Let try using [Strkyer](https://stryker-mutator.io/) to try Mutation Testing.
 1. Install Strkyer and other node modules
 
    ```
-   npm i -D @stryker-mutator/core@2.4.0 @stryker-mutator/html-reporter@2.4.0 @stryker-mutator/javascript-mutator@2.4.0 @stryker-mutator/jest-runner@2.4.0
+   npm i -D @stryker-mutator/core@2.4.0 @stryker-mutator/html-reporter@2.4.0 @stryker-mutator/javascript-mutator@2.4.0 @stryker-mutator/jest-runner@2.4.0 mutation-testing-report-schema@1.3.1
    ```
 
 2. Create `stryker.ci.conf.js` with the following contents:
