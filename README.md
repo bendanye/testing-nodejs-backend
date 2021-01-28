@@ -34,7 +34,7 @@
 
 -   [Exercise 4.1: Useful Vscode Extensions](#-exercise-41-useful-vscode-extensions)
 -   [Exercise 4.2: Auto-format your code upon saving](#-exercise-42-auto-format-codes)
--   [Exercise 4.3: Auto-linting using Husky and Lint-stage](#-exercise-43-husky-lintstage)
+-   [Exercise 4.3: Automated Pre-commit Run Check using Husky and Lint-stage](#-exercise-43-husky-lintstage)
 -   [Exercise 4.4: Use code Snippet to reduce duplicate typing of codes](#-exercise-44-code-snippet)
 -   [Exercise 4.5: Check your dependencies with dependency-cruiser](#-exercise-45-dependencies-cruister)
 -   [Exercise 4.6: Duplicate code check using JSCPD](#-exercise-46-jscpd)
@@ -598,7 +598,9 @@ In order to use Newman to run,
 
     What this piece of codes does is to import newman module and load environment.json and change the value inside the environment if there is a value set it via process.env.
 
-    What Collection to run is indicated via the name of the collection and any specific folders (in this case, all the requests in healthcheck and search folder will be run only)
+    What Collection to run is indicated via the name of the collection and any specific folders (in this case, all the requests in healthcheck and search folder will be run only).
+
+    One possible scenario where you need to specify folders is during CICD such as I want to run all test cases at "staging" environment while I want to run all the test cases that not doing any creating data at "production" environment.
 
 6. Open terminal and type the command
 
@@ -663,7 +665,7 @@ I love green build in CICD pipelines and should always strive to do so. Committi
 
 Also sometimes newly joined developer does not know how the team structure their codes like whether to use Single Quote or Double Quote when declaring String value (I admit, I been asking myself this question many times before I find out the answer myself)
 
-Luckily there are tools out there can help us do some form of checking or do the formatting for us.
+Luckily there are tools out there can help us do some form of checking or do the formatting for us. In other words, Automated Code Review.
 
 [EsLint](https://eslint.org/) is a tool that scan your codes and flagged out any potential problems.
 
@@ -1092,15 +1094,76 @@ In previous chapter where we have setup Prettier to format our codes whenever we
 
 5. Now go to any of the .js code and enter some code. Once you save, it should format the code
 
-### Exercise 4.3: Auto-linting using Husky and Lint-stage
+### Exercise 4.3: Automated Pre-commit Run Check using Husky and Lint-staged
 
-In the previous exercise where we learn how to use VSCode to auto format upon saving. This approach while it saves manual effort on formatting the code, the challenge that developers (especially me) often faces is how to remember to run automated testing and linting before commit the codes so that to prevent bad built as much as possible? Fear not, thanks to google, I finally got the answer, Husky and Lint-stage
+In the previous exercise where we learn how to use VSCode to auto format upon saving. This approach while it saves manual effort on formatting the code, the challenge that developers (especially me) often faces is how to remember to run automated testing and linting before commit the codes so that to prevent bad built as much as possible? Fear not, thanks to google, I finally got the answer, Husky and Lint-staged
 
- 
+1. Install [Husky](https://github.com/typicode/husky) and [lint-staged](https://github.com/okonet/lint-staged)
 
-### Exercise 4.4: Use code Snippet to reduce duplicate typing of codes
+    ```
+    npm i -D lint-staged@10.1.3 husky@4.2.1
+    ```
 
-In this chapter, we will be learning how to test API.
+2. Add the following codes in `package.json` like this:
+
+    ```json
+    "lint-staged": {
+        "*.{js,jsx}": [
+            "node_modules/.bin/eslint . --ext .js --fix",
+            "jest --bail --findRelatedTests",
+            "git add"
+        ]
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "lint-staged"
+        }
+    }
+    ```
+
+Husky will be triggered when you try to git commit (pre-commit hook) and will find "lint-staged" to execute commands that you specified. In the example, it will run an es-lint check and jest test.
+
+To demonstrate, you can try to make a test that failed on purpose or ESLint contains errors and try to commit. You will encounter a message saying "Husky > pre-commit hook failed (add --no-verify to bypass)
+
+### Exercise 4.4: Use Code Snippet to reduce duplicate typing of codes
+
+Is there any line of codes that you have repeatedly typing out? For me definitely yes, for example, console.log(), Jest-describe-test. Why not just use "code snippet" that auto creates those line of codes for us? Yes please!
+
+For this example, I will be showing how to create Code Snippet to auto create few lines of Jest-describe-test whenever I type out prefix.
+
+​1. At VSCode, go to File -> Preferences -> User Snippets
+
+2. Click on New Global Snippets file...
+
+3. Enter the name for the file. You should see it will create a new file as shown: ![sample](./imgs/codesnippet1.png)
+
+4. You need to use the format as shown in the file. Alternative you can use [Snippet Generator](https://snippet-generator.app/) to create the format for you.
+
+For this example, I have provide the template which I am currently using now. Copy and paste the following template and save it.
+
+    ```json
+    {
+        "Jest Desc and Test": {
+            "prefix": "desctest",
+            "body": [
+                "const {} = require('${TM_FILEPATH}/${TM_FILENAME_BASE}')",
+                "",
+                "describe('${TM_FILENAME_BASE}', () => {",
+                "    describe('Name of the group', () => {",
+                "        test('should ', () => {",
+                "            ",
+                "        });",
+                "    });",
+                "});"
+            ],
+            "description": "Jest Desc and Test"
+        }
+    }
+    ```
+
+5. To test out, go to any of the .js file and type out desctest.
+
+![sample](./imgs/codesnippet2.gif)
 
 ### Exercise 4.5: Check your dependencies with dependency-cruiser
 
