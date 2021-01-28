@@ -38,6 +38,9 @@
 -   [Exercise 4.4: Use code Snippet to reduce duplicate typing of codes](#-exercise-44-code-snippet)
 -   [Exercise 4.5: Check your dependencies with dependency-cruiser](#-exercise-45-dependencies-cruister)
 -   [Exercise 4.6: Duplicate code check using JSCPD](#-exercise-46-jscpd)
+-   [Exercise 4.7: View code complexity](#-exercise-47-es6plato)
+
+[Disclaimer](#disclaimer)
 
 # Introduction
 
@@ -1131,7 +1134,7 @@ Is there any line of codes that you have repeatedly typing out? For me definitel
 
 For this example, I will be showing how to create Code Snippet to auto create few lines of Jest-describe-test whenever I type out prefix.
 
-​1. At VSCode, go to File -> Preferences -> User Snippets
+1. At VSCode, go to File -> Preferences -> User Snippets
 
 2. Click on New Global Snippets file...
 
@@ -1161,18 +1164,122 @@ For this example, I have provide the template which I am currently using now. Co
     }
     ```
 
-5. To test out, go to any of the .js file and type out desctest.
+5. To test, go to any of the .js file and type out desctest.
 
 ![sample](./imgs/codesnippet2.gif)
 
 ### Exercise 4.5: Check your dependencies with dependency-cruiser
 
-In this chapter, we will be learning how to test API.
+In a typical project where there are rules and regulations on how to places those files. For my example, I have `src` and `test` folders and let me ask you a question, should any of the codes in `src` folder referenced any codes in `test` folder? Probably not because `src` folder are meant for production codes and `test` folder are meant for testing codes and will not be copied when building Docker image and what if the codes in `src` folder referenced the codes in `test` folder? highly when the Docker image deployed to production will encountered run time error....
+
+To prevent such things from happening, you can use Dependency-Cruiser to check for dependency that includes incorrect file dependency!
+
+1. Install [dependency-cruiser](https://github.com/sverweij/dependency-cruiser)
+
+    ```
+    npm i -D dependency-cruiser@8.1.1
+    ```
+
+2. Add the following codes in `package.json` like this:
+
+    ```json
+    "scripts": {
+        "dependency-cruiser:validate": "./node_modules/.bin/depcruise --validate .dependency-cruiser.json src",
+    }
+    ```
+
+3. Create a new file, `.dependency-cruiser.json` and copy the following content into the file
+
+    ```json
+    {
+        "forbidden": [
+            {
+                "name": "not-to-test",
+                "comment": "don't allow dependencies from outside the test folder to test",
+                "severity": "error",
+                "from": { "pathNot": "^test" },
+                "to": { "path": "^test" }
+            },
+            {
+                "name": "not-from-database",
+                "comment": "don't allow dependencies from database to anywhere else except common",
+                "severity": "error",
+                "from": { "path": "^src/api/database" },
+                "to": {
+                    "pathNot": "^src/api/database|src/common|node_modules"
+                }
+            }
+        ]
+    }
+    ```
+
+    The two forbidden rules meant:
+
+    - Do not allow any dependencies from non-test folder to test folder
+    - Do not allow any dependencies from DB folder to any folder EXCEPT common folder
+
+4. You can purposely break these rules and run the following command:
+
+    ```
+    npm run dependency-cruiser:validate
+    ```
 
 ### Exercise 4.6: Duplicate code check using JSCPD
 
-In this chapter, we will be learning how to test API.
+In a large project where there are many developers working on the same project with many files and codes in it. Unknowingly we may unintended create duplicate codes that exists in the code base. To check for duplicate codes, use jscpd
 
-```
+1. Install [jscpd](https://github.com/kucherenko/jscpd)
 
-```
+    ```
+    npm i -D jscpd
+    ```
+
+2. Add the following codes in `package.json` like this:
+
+    ```json
+    "scripts": {
+        "scan:codeduplicate": "jscpd src test --reporters html --output reports/codeduplicate"
+    }
+    ```
+
+3. Run the following command:
+
+    ```
+    npm run scan:codeduplicate
+    ```
+
+    You can find the report at /reports/codeduplicate
+
+    ![sample duplicate report](./imgs/codeduplicate1.png)
+
+### Exercise 4.7: View Code Complexity
+
+As a developer, we need to understand whether that function I wrote is it complexity or maintainable or not. [Code Complexity](https://blog.codacy.com/an-in-depth-explanation-of-code-complexity/) is a software metric used to indicate the complexity of a program.
+
+1. Install [es6-plato](https://github.com/the-simian/es6-plato)
+
+    ```
+    npm i -D es6-plato@1.2.3
+    ```
+
+2. Add the following codes in `package.json` like this:
+
+    ```json
+    "scripts": {
+        "plato:es6": "./node_modules/.bin/es6-plato -r -d reports/esplato src",
+    }
+    ```
+
+3. Run the following command:
+
+    ```
+    npm run plato:es6
+    ```
+
+    You can find the report at /reports/esplato
+
+# Disclaimer
+
+I do not claim what I teaching or sharing is correct since I am also learning as well but I always believe that we need to keep learning and pause our work is needed in order to improve ourselves in order to go even faster and further.
+
+![keep improving](./imgs/keepimprove.jpg)

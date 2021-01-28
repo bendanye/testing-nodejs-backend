@@ -1,0 +1,1 @@
+"scan:codeduplicate": "jscpd src test --reporters html --output reports/codeduplicate",

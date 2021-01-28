@@ -1,0 +1,1 @@
+npm i -D dependency-cruiser@8.1.1

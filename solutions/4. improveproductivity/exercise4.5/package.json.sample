@@ -1,0 +1,1 @@
+"dependency-cruiser:validate": "./node_modules/.bin/depcruise --validate .dependency-cruiser.json src",

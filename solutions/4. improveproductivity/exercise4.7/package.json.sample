@@ -1,0 +1,1 @@
+"plato:es6": "./node_modules/.bin/es6-plato -r -d reports/esplato src",

@@ -1,0 +1,1 @@
+npm i -D es6-plato@1.2.3
